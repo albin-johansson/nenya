@@ -45,9 +45,11 @@ TEST(Nenya, ExplicitConversions)
   EXPECT_EQ(42, static_cast<int>(i));
   EXPECT_TRUE(static_cast<bool>(b));
 
+#ifdef _MSC_VER
   static_assert(!noexcept(static_cast<std::string>(str)));
   static_assert(noexcept(static_cast<int>(i)));
   static_assert(noexcept(static_cast<bool>(b)));
+#endif  // _MSC_VER
 }
 
 TEST(Nenya, Addition)
@@ -61,7 +63,10 @@ TEST(Nenya, Addition)
     const integer bb{b};
 
     EXPECT_EQ(integer{sum}, aa + bb);
+
+#ifdef _MSC_VER
     static_assert(noexcept(aa + bb));
+#endif  // _MSC_VER
   }
 
   {  // Strings
@@ -73,7 +78,10 @@ TEST(Nenya, Addition)
     const string bb{b};
 
     EXPECT_EQ(string{concatenated}, aa + bb);
+
+#ifdef _MSC_VER
     static_assert(!noexcept(aa + bb));
+#endif  // _MSC_VER
   }
 }
 
@@ -89,7 +97,10 @@ TEST(Nenya, Subtraction)
 
   EXPECT_EQ(integer{ab}, aa - bb);
   EXPECT_EQ(integer{ba}, bb - aa);
+
+#ifdef _MSC_VER
   static_assert(noexcept(aa - bb));
+#endif  // _MSC_VER
 }
 
 TEST(Nenya, Division)
@@ -102,7 +113,10 @@ TEST(Nenya, Division)
   const integer bb{b};
 
   EXPECT_EQ(integer{quotient}, aa / bb);
+
+#ifdef _MSC_VER
   static_assert(noexcept(aa / bb));
+#endif  // _MSC_VER
 }
 
 TEST(Nenya, Multiplication)
@@ -115,7 +129,10 @@ TEST(Nenya, Multiplication)
   const integer bb{b};
 
   EXPECT_EQ(integer{product}, aa * bb);
+
+#ifdef _MSC_VER
   static_assert(noexcept(aa * bb));
+#endif  // _MSC_VER
 }
 
 TEST(Nenya, Mod)
@@ -128,7 +145,10 @@ TEST(Nenya, Mod)
   const integer bb{b};
 
   EXPECT_EQ(integer{mod}, aa % bb);
+
+#ifdef _MSC_VER
   static_assert(noexcept(aa % bb));
+#endif  // _MSC_VER
 }
 
 TEST(Nenya, BitwiseAND)
@@ -141,7 +161,10 @@ TEST(Nenya, BitwiseAND)
   const integer bb{b};
 
   EXPECT_EQ(integer{res}, aa & bb);
+
+#ifdef _MSC_VER
   static_assert(noexcept(aa & bb));
+#endif  // _MSC_VER
 }
 
 TEST(Nenya, BitwiseOR)
@@ -154,7 +177,10 @@ TEST(Nenya, BitwiseOR)
   const integer bb{b};
 
   EXPECT_EQ(integer{res}, aa | bb);
+
+#ifdef _MSC_VER
   static_assert(noexcept(aa | bb));
+#endif  // _MSC_VER
 }
 
 TEST(Nenya, BitwiseXOR)
@@ -167,7 +193,10 @@ TEST(Nenya, BitwiseXOR)
   const integer bb{b};
 
   EXPECT_EQ(integer{res}, aa ^ bb);
+
+#ifdef _MSC_VER
   static_assert(noexcept(aa ^ bb));
+#endif  // _MSC_VER
 }
 
 TEST(Nenya, LeftShift)
@@ -180,7 +209,10 @@ TEST(Nenya, LeftShift)
   const integer bb{b};
 
   EXPECT_EQ(integer{shift}, aa << bb);
+
+#ifdef _MSC_VER
   static_assert(noexcept(aa << bb));
+#endif  // _MSC_VER
 }
 
 TEST(Nenya, RightShift)
@@ -193,7 +225,10 @@ TEST(Nenya, RightShift)
   const integer bb{b};
 
   EXPECT_EQ(integer{shift}, aa >> bb);
+
+#ifdef _MSC_VER
   static_assert(noexcept(aa >> bb));
+#endif  // _MSC_VER
 }
 
 TEST(Nenya, UnaryMinus)
@@ -204,7 +239,10 @@ TEST(Nenya, UnaryMinus)
   const integer aa{a};
 
   EXPECT_EQ(integer{res}, -aa);
+
+#ifdef _MSC_VER
   static_assert(noexcept(-aa));
+#endif  // _MSC_VER
 }
 
 TEST(Nenya, AdditionAssignment)
@@ -220,7 +258,10 @@ TEST(Nenya, AdditionAssignment)
     aa += bb;
 
     EXPECT_EQ(integer{a}, aa);
+
+#ifdef _MSC_VER
     static_assert(noexcept(aa += bb));
+#endif  // _MSC_VER
   }
 
   {  // Strings
@@ -234,7 +275,10 @@ TEST(Nenya, AdditionAssignment)
     aa += bb;
 
     EXPECT_EQ(string{a}, aa);
+
+#ifdef _MSC_VER
     static_assert(!noexcept(aa += bb));
+#endif  // _MSC_VER
   }
 }
 
@@ -250,7 +294,10 @@ TEST(Nenya, SubtractionAssignment)
   aa -= bb;
 
   EXPECT_EQ(integer{a}, aa);
+
+#ifdef _MSC_VER
   static_assert(noexcept(aa -= bb));
+#endif  // _MSC_VER
 }
 
 TEST(Nenya, DivisionAssignment)
@@ -265,7 +312,10 @@ TEST(Nenya, DivisionAssignment)
   aa /= bb;
 
   EXPECT_EQ(integer{a}, aa);
+
+#ifdef _MSC_VER
   static_assert(noexcept(aa /= bb));
+#endif  // _MSC_VER
 }
 
 TEST(Nenya, MultiplicationAssignment)
@@ -280,7 +330,10 @@ TEST(Nenya, MultiplicationAssignment)
   aa *= bb;
 
   EXPECT_EQ(integer{a}, aa);
+
+#ifdef _MSC_VER
   static_assert(noexcept(aa *= bb));
+#endif  // _MSC_VER
 }
 
 TEST(Nenya, ModuloAssignment)
@@ -295,7 +348,10 @@ TEST(Nenya, ModuloAssignment)
   aa %= bb;
 
   EXPECT_EQ(integer{a}, aa);
+
+#ifdef _MSC_VER
   static_assert(noexcept(aa %= bb));
+#endif  // _MSC_VER
 }
 
 TEST(Nenya, BitwiseANDAssignment)
@@ -310,7 +366,10 @@ TEST(Nenya, BitwiseANDAssignment)
   aa &= bb;
 
   EXPECT_EQ(integer{a}, aa);
+
+#ifdef _MSC_VER
   static_assert(noexcept(aa &= bb));
+#endif  // _MSC_VER
 }
 
 TEST(Nenya, BitwiseORAssignment)
@@ -325,7 +384,10 @@ TEST(Nenya, BitwiseORAssignment)
   aa |= bb;
 
   EXPECT_EQ(integer{a}, aa);
+
+#ifdef _MSC_VER
   static_assert(noexcept(aa |= bb));
+#endif  // _MSC_VER
 }
 
 TEST(Nenya, LeftShiftAssignment)
@@ -340,7 +402,10 @@ TEST(Nenya, LeftShiftAssignment)
   aa <<= bb;
 
   EXPECT_EQ(integer{a}, aa);
+
+#ifdef _MSC_VER
   static_assert(noexcept(aa <<= bb));
+#endif  // _MSC_VER
 }
 
 TEST(Nenya, RightShiftAssignment)
@@ -355,7 +420,10 @@ TEST(Nenya, RightShiftAssignment)
   aa >>= bb;
 
   EXPECT_EQ(integer{a}, aa);
+
+#ifdef _MSC_VER
   static_assert(noexcept(aa >>= bb));
+#endif  // _MSC_VER
 }
 
 TEST(Nenya, Subscript)
@@ -383,8 +451,10 @@ TEST(Nenya, BoolConversion)
     EXPECT_FALSE(b);
     EXPECT_FALSE(mi);
 
+#ifdef _MSC_VER
     static_assert(noexcept(b.operator bool()));
     static_assert(noexcept(mi.operator bool()));
+#endif  // _MSC_VER
   }
 
   {  // With custom values
@@ -416,7 +486,9 @@ TEST(Nenya, EqualityOperator)
     EXPECT_FALSE(a == c);
     EXPECT_FALSE(c == a);
 
+#ifdef _MSC_VER
     static_assert(noexcept(a == b));
+#endif  // _MSC_VER
   }
 
   {  // Strings
@@ -431,7 +503,9 @@ TEST(Nenya, EqualityOperator)
     EXPECT_FALSE(a == c);
     EXPECT_FALSE(c == a);
 
+#ifdef _MSC_VER
     static_assert(noexcept(a == b));
+#endif  // _MSC_VER
   }
 }
 
@@ -449,7 +523,9 @@ TEST(Nenya, InequalityOperator)
     EXPECT_NE(a, c);
     EXPECT_NE(c, a);
 
+#ifdef _MSC_VER
     static_assert(noexcept(a != b));
+#endif  // _MSC_VER
   }
 
   {  // Strings
@@ -464,7 +540,9 @@ TEST(Nenya, InequalityOperator)
     EXPECT_NE(a, c);
     EXPECT_NE(c, a);
 
+#ifdef _MSC_VER
     static_assert(noexcept(a != b));
+#endif  // _MSC_VER
   }
 }
 
@@ -480,7 +558,9 @@ TEST(Nenya, LessThanOperator)
     const integer c{40};
     EXPECT_FALSE(a < c);
 
+#ifdef _MSC_VER
     static_assert(noexcept(a < b));
+#endif  // _MSC_VER
   }
 
   {  // Strings
@@ -493,7 +573,9 @@ TEST(Nenya, LessThanOperator)
     const string c{"x"};
     EXPECT_FALSE(a < c);
 
+#ifdef _MSC_VER
     static_assert(noexcept(a < b));
+#endif  // _MSC_VER
   }
 }
 
@@ -509,7 +591,9 @@ TEST(Nenya, LessThanOrEqualOperator)
     const integer c{40};
     EXPECT_FALSE(a <= c);
 
+#ifdef _MSC_VER
     static_assert(noexcept(a <= b));
+#endif  // _MSC_VER
   }
 
   {  // Strings
@@ -522,7 +606,9 @@ TEST(Nenya, LessThanOrEqualOperator)
     const string c{"x"};
     EXPECT_FALSE(a <= c);
 
+#ifdef _MSC_VER
     static_assert(noexcept(a <= b));
+#endif  // _MSC_VER
   }
 }
 
@@ -538,7 +624,9 @@ TEST(Nenya, GreaterThanOperator)
     const integer c{8};
     EXPECT_FALSE(a > c);
 
+#ifdef _MSC_VER
     static_assert(noexcept(a > b));
+#endif  // _MSC_VER
   }
 
   {  // Strings
@@ -551,7 +639,9 @@ TEST(Nenya, GreaterThanOperator)
     const string c{"z"};
     EXPECT_FALSE(a > c);
 
+#ifdef _MSC_VER
     static_assert(noexcept(a > b));
+#endif  // _MSC_VER
   }
 }
 
@@ -567,7 +657,9 @@ TEST(Nenya, GreaterThanOrEqualOperator)
     const integer c{8};
     EXPECT_FALSE(a >= c);
 
+#ifdef _MSC_VER
     static_assert(noexcept(a >= b));
+#endif  // _MSC_VER
   }
 
   {  // Strings
@@ -580,7 +672,9 @@ TEST(Nenya, GreaterThanOrEqualOperator)
     const string c{"z"};
     EXPECT_FALSE(a >= c);
 
+#ifdef _MSC_VER
     static_assert(noexcept(a >= b));
+#endif  // _MSC_VER
   }
 }
 

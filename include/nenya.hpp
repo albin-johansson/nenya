@@ -14,6 +14,13 @@
  */
 namespace nenya {
 
+// MSVC has better support for conditional noexcept specifier
+#ifdef _MSC_VER
+#define NENYA_NOEXCEPT_AS(expr) noexcept(noexcept((expr)))
+#else
+#define NENYA_NOEXCEPT_AS(expr)
+#endif  // _MSC_VER
+
 // clang-format off
 
 template <typename T>
@@ -149,7 +156,7 @@ enum conversion
  * `std::hash`. It works out-of-the-box with common types such as `int` or
  * `std::string`.
  *
- * \details Furthermore, this class is `constexpr` and `noexcept` aware and will
+ * \details Furthermore, this class is `constexpr` and `noexcept` (on MSVC) aware and will
  * respect the properties of the underlying type.
  *
  * \tparam Rep the representation type, e.g `int` or `std::string`.
@@ -183,70 +190,68 @@ class strong_type
   /// \name Unary operators
   /// \{
 
-  constexpr strong_type& operator++() noexcept(noexcept(++m_value))
+  constexpr strong_type& operator++() NENYA_NOEXCEPT_AS(++m_value)
       requires pre_increment<value_type>
   {
     ++m_value;
     return *this;
   }
 
-  constexpr strong_type operator++(int) noexcept(noexcept(m_value++))
+  constexpr strong_type operator++(int) NENYA_NOEXCEPT_AS(m_value++)
       requires post_increment<value_type>
   {
     return strong_type{m_value++};
   }
 
-  constexpr strong_type& operator--() noexcept(noexcept(--m_value))
+  constexpr strong_type& operator--() NENYA_NOEXCEPT_AS(--m_value)
       requires pre_decrement<value_type>
   {
     --m_value;
     return *this;
   }
 
-  constexpr strong_type operator--(int) noexcept(noexcept(m_value--))
+  constexpr strong_type operator--(int) NENYA_NOEXCEPT_AS(m_value--)
       requires post_decrement<value_type>
   {
     return strong_type{m_value--};
   }
 
   [[nodiscard]]
-  constexpr auto operator+() const noexcept(noexcept(+m_value))
+  constexpr auto operator+() const NENYA_NOEXCEPT_AS(+m_value)
       requires unary_plus<value_type>
   {
     return strong_type{+m_value};
   }
 
   [[nodiscard]]
-  constexpr auto operator-() const noexcept(noexcept(-m_value))
+  constexpr auto operator-() const NENYA_NOEXCEPT_AS(-m_value)
       requires unary_minus<value_type>
   {
     return strong_type{-m_value};
   }
 
   [[nodiscard]]
-  constexpr auto operator~() const noexcept(noexcept(~m_value))
+  constexpr auto operator~() const NENYA_NOEXCEPT_AS(~m_value)
       requires bit_not<value_type>
   {
     return strong_type{~m_value};
   }
 
   [[nodiscard]]
-  constexpr auto operator!() const noexcept(noexcept(!m_value))
+  constexpr auto operator!() const NENYA_NOEXCEPT_AS(!m_value)
       requires negation<value_type>
   {
     return !m_value;
   }
 
   template <typename Index> requires subscript<value_type, Index>
-  constexpr decltype(auto) operator[](const Index& key)
-      noexcept(noexcept(m_value.operator[](key)))
+  constexpr decltype(auto) operator[](const Index& key) NENYA_NOEXCEPT_AS(m_value[key])
   {
     return m_value[key];
   }
 
   template <typename Index> requires subscript<value_type, Index>
-  constexpr decltype(auto) operator[](const Index& key) const
-      noexcept(noexcept(m_value.operator[](key)))
+  constexpr decltype(auto) operator[](const Index& key) const NENYA_NOEXCEPT_AS(m_value[key])
   {
     return m_value[key];
   }
@@ -257,80 +262,70 @@ class strong_type
   /// \{
 
   [[nodiscard]]
-  constexpr auto operator+(const strong_type& rhs) const
-      noexcept(noexcept(m_value + rhs.m_value))
+  constexpr auto operator+(const strong_type& rhs) const NENYA_NOEXCEPT_AS(m_value + rhs.m_value)
       requires addition<value_type>
   {
     return strong_type{m_value + rhs.m_value};
   }
 
   [[nodiscard]]
-  constexpr auto operator-(const strong_type& rhs) const
-      noexcept(noexcept(m_value - rhs.m_value))
+  constexpr auto operator-(const strong_type& rhs) const NENYA_NOEXCEPT_AS(m_value - rhs.m_value)
       requires subtraction<value_type>
   {
     return strong_type{m_value - rhs.m_value};
   }
 
   [[nodiscard]]
-  constexpr auto operator/(const strong_type& rhs) const
-      noexcept(noexcept(m_value / rhs.m_value))
+  constexpr auto operator/(const strong_type& rhs) const NENYA_NOEXCEPT_AS(m_value / rhs.m_value)
       requires division<value_type>
   {
     return strong_type{m_value / rhs.m_value};
   }
 
   [[nodiscard]]
-  constexpr auto operator*(const strong_type& rhs) const
-      noexcept(noexcept(m_value * rhs.m_value))
+  constexpr auto operator*(const strong_type& rhs) const NENYA_NOEXCEPT_AS(m_value * rhs.m_value)
       requires multiplication<value_type>
   {
     return strong_type{m_value * rhs.m_value};
   }
 
   [[nodiscard]]
-  constexpr auto operator%(const strong_type& rhs) const
-      noexcept(noexcept(m_value % rhs.m_value))
+  constexpr auto operator%(const strong_type& rhs) const NENYA_NOEXCEPT_AS(m_value % rhs.m_value)
       requires modulo<value_type>
   {
     return strong_type{m_value % rhs.m_value};
   }
 
   [[nodiscard]]
-  constexpr auto operator&(const strong_type& rhs) const
-      noexcept(noexcept(m_value & rhs.m_value))
+  constexpr auto operator&(const strong_type& rhs) const NENYA_NOEXCEPT_AS(m_value & rhs.m_value)
       requires bit_and<value_type>
   {
     return strong_type{m_value & rhs.m_value};
   }
 
   [[nodiscard]]
-  constexpr auto operator|(const strong_type& rhs) const
-      noexcept(noexcept(m_value | rhs.m_value))
+  constexpr auto operator|(const strong_type& rhs) const NENYA_NOEXCEPT_AS(m_value | rhs.m_value)
       requires bit_or<value_type>
   {
     return strong_type{m_value | rhs.m_value};
   }
 
   [[nodiscard]]
-  constexpr auto operator^(const strong_type& rhs) const
-      noexcept(noexcept(m_value ^ rhs.m_value))
+  constexpr auto operator^(const strong_type& rhs) const NENYA_NOEXCEPT_AS(m_value ^ rhs.m_value)
       requires bit_xor<value_type>
   {
     return strong_type{m_value ^ rhs.m_value};
   }
 
   [[nodiscard]]
-  constexpr auto operator<<(const strong_type& rhs) const
-      noexcept(noexcept(m_value << rhs.m_value))
+  constexpr auto operator<<(const strong_type& rhs) const NENYA_NOEXCEPT_AS(m_value << rhs.m_value)
       requires left_shift<value_type>
   {
     return strong_type{m_value << rhs.m_value};
   }
 
   [[nodiscard]]
-  constexpr auto operator>>(const strong_type& rhs) const
-      noexcept(noexcept(m_value >> rhs.m_value))
+  constexpr auto operator>>(const strong_type& rhs) const NENYA_NOEXCEPT_AS(m_value >> rhs.m_value)
       requires right_shift<value_type>
   {
     return strong_type{m_value >> rhs.m_value};
@@ -341,80 +336,70 @@ class strong_type
   /// \name Assignment operators
   /// \{
 
-  constexpr strong_type& operator+=(const strong_type& rhs)
-      noexcept(noexcept(m_value += rhs.m_value))
+  constexpr strong_type& operator+=(const strong_type& rhs) NENYA_NOEXCEPT_AS(m_value += rhs.m_value)
       requires addition_assignment<value_type>
   {
     m_value += rhs.m_value;
     return *this;
   }
 
-  constexpr strong_type& operator-=(const strong_type& rhs)
-      noexcept(noexcept(m_value -= rhs.m_value))
+  constexpr strong_type& operator-=(const strong_type& rhs) NENYA_NOEXCEPT_AS(m_value -= rhs.m_value)
       requires subtraction_assignment<value_type>
   {
     m_value -= rhs.m_value;
     return *this;
   }
 
-  constexpr strong_type& operator/=(const strong_type& rhs)
-      noexcept(noexcept(m_value /= rhs.m_value))
+  constexpr strong_type& operator/=(const strong_type& rhs) NENYA_NOEXCEPT_AS(m_value /= rhs.m_value)
       requires division_assignment<value_type>
   {
     m_value /= rhs.m_value;
     return *this;
   }
 
-  constexpr strong_type& operator*=(const strong_type& rhs)
-      noexcept(noexcept(m_value *= rhs.m_value))
+  constexpr strong_type& operator*=(const strong_type& rhs) NENYA_NOEXCEPT_AS(m_value *= rhs.m_value)
       requires multiplication_assignment<value_type>
   {
     m_value *= rhs.m_value;
     return *this;
   }
 
-  constexpr strong_type& operator%=(const strong_type& rhs)
-      noexcept(noexcept(m_value %= rhs.m_value))
+  constexpr strong_type& operator%=(const strong_type& rhs) NENYA_NOEXCEPT_AS(m_value %= rhs.m_value)
       requires modulo_assignment<value_type>
   {
     m_value %= rhs.m_value;
     return *this;
   }
 
-  constexpr strong_type& operator&=(const strong_type& rhs)
-      noexcept(noexcept(m_value &= rhs.m_value))
+  constexpr strong_type& operator&=(const strong_type& rhs) NENYA_NOEXCEPT_AS(m_value &= rhs.m_value)
       requires bit_and_assignment<value_type>
   {
     m_value &= rhs.m_value;
     return *this;
   }
 
-  constexpr strong_type& operator|=(const strong_type& rhs)
-      noexcept(noexcept(m_value |= rhs.m_value))
+  constexpr strong_type& operator|=(const strong_type& rhs) NENYA_NOEXCEPT_AS(m_value |= rhs.m_value)
       requires bit_or_assignment<value_type>
   {
     m_value |= rhs.m_value;
     return *this;
   }
 
-  constexpr strong_type& operator^=(const strong_type& rhs)
-      noexcept(noexcept(m_value ^= rhs.m_value))
+  constexpr strong_type& operator^=(const strong_type& rhs) NENYA_NOEXCEPT_AS(m_value ^= rhs.m_value)
       requires bit_xor_assignment<value_type>
   {
     m_value ^= rhs.m_value;
     return *this;
   }
 
-  constexpr strong_type& operator<<=(const strong_type& rhs)
-      noexcept(noexcept(m_value <<= rhs.m_value))
+  constexpr strong_type& operator<<=(const strong_type& rhs) NENYA_NOEXCEPT_AS(m_value <<= rhs.m_value)
       requires left_shift_assignment<value_type>
   {
     m_value <<= rhs.m_value;
     return *this;
   }
 
-  constexpr strong_type& operator>>=(const strong_type& rhs)
-      noexcept(noexcept(m_value >>= rhs.m_value))
+  constexpr strong_type& operator>>=(const strong_type& rhs) NENYA_NOEXCEPT_AS(m_value >>= rhs.m_value)
       requires right_shift_assignment<value_type>
   {
     m_value >>= rhs.m_value;
@@ -427,48 +412,42 @@ class strong_type
   /// \{
 
   [[nodiscard]]
-  constexpr auto operator==(const strong_type& rhs) const
-      noexcept(noexcept(m_value == rhs.m_value))
+  constexpr auto operator==(const strong_type& rhs) const NENYA_NOEXCEPT_AS(m_value == rhs.m_value)
       requires std::equality_comparable<value_type>
   {
     return m_value == rhs.m_value;
   }
 
   [[nodiscard]]
-  constexpr auto operator!=(const strong_type& rhs) const
-      noexcept(noexcept(m_value != rhs.m_value))
+  constexpr auto operator!=(const strong_type& rhs) const NENYA_NOEXCEPT_AS(m_value != rhs.m_value)
       requires std::equality_comparable<value_type>
   {
     return m_value != rhs.m_value;
   }
 
   [[nodiscard]]
-  constexpr auto operator<(const strong_type& rhs) const
-      noexcept(noexcept(m_value < rhs.m_value))
+  constexpr auto operator<(const strong_type& rhs) const NENYA_NOEXCEPT_AS(m_value < rhs.m_value)
       requires less<value_type>
   {
     return m_value < rhs.m_value;
   }
 
   [[nodiscard]]
-  constexpr auto operator<=(const strong_type& rhs) const
-      noexcept(noexcept(m_value <= rhs.m_value))
+  constexpr auto operator<=(const strong_type& rhs) const NENYA_NOEXCEPT_AS(m_value <= rhs.m_value)
       requires less_equal<value_type>
   {
     return m_value <= rhs.m_value;
   }
 
   [[nodiscard]]
-  constexpr auto operator>(const strong_type& rhs) const
-      noexcept(noexcept(m_value > rhs.m_value))
+  constexpr auto operator>(const strong_type& rhs) const NENYA_NOEXCEPT_AS(m_value > rhs.m_value)
       requires greater<value_type>
   {
     return m_value > rhs.m_value;
   }
 
   [[nodiscard]]
-  constexpr auto operator>=(const strong_type& rhs) const
-      noexcept(noexcept(m_value >= rhs.m_value))
+  constexpr auto operator>=(const strong_type& rhs) const NENYA_NOEXCEPT_AS(m_value >= rhs.m_value)
       requires greater_equal<value_type>
   {
     return m_value >= rhs.m_value;
@@ -506,8 +485,7 @@ class strong_type
     return m_value;
   }
 
-  constexpr explicit operator bool() const
-      noexcept(noexcept(static_cast<bool>(m_value)))
+  constexpr explicit operator bool() const NENYA_NOEXCEPT_AS(static_cast<bool>(m_value))
       requires bool_convertible<value_type> && (!std::same_as<value_type, bool>)
   {
     return static_cast<bool>(m_value);
