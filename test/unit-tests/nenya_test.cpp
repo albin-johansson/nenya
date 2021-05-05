@@ -4,10 +4,11 @@
 
 #include <cereal/archives/binary.hpp>
 #include <cereal/types/string.hpp>
-#include <fstream>   // ifstream, ofstream
-#include <ios>       // ios
-#include <optional>  // optional
-#include <string>    // string
+#include <fstream>        // ifstream, ofstream
+#include <ios>            // ios
+#include <optional>       // optional
+#include <string>         // string
+#include <unordered_map>  // unordered_map
 
 namespace tags {
 struct string_t;
@@ -642,4 +643,10 @@ TEST(Nenya, ConditionallyExplicit)
 
   static_assert(std::convertible_to<implicit_int, int>);
   static_assert(!std::convertible_to<explicit_int, int>);
+}
+
+TEST(Nenya, Hash)
+{
+  std::unordered_map<integer, string> map;
+  map.try_emplace(integer{42}, string{"foobar"});
 }
