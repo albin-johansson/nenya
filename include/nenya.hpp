@@ -172,11 +172,11 @@ class strong_type
 
   constexpr strong_type() = default;
 
-  constexpr explicit strong_type(const Rep& value) noexcept(nothrowCopy)
+  constexpr explicit strong_type(const value_type& value) noexcept(nothrowCopy)
       : m_value{value}
   {}
 
-  constexpr explicit strong_type(Rep&& value) noexcept(nothrowMove)
+  constexpr explicit strong_type(value_type&& value) noexcept(nothrowMove)
       : m_value{std::move(value)}
   {}
 
@@ -184,67 +184,67 @@ class strong_type
   /// \{
 
   constexpr strong_type& operator++() noexcept(noexcept(++m_value))
-      requires pre_increment<Rep>
+      requires pre_increment<value_type>
   {
     ++m_value;
     return *this;
   }
 
   constexpr strong_type operator++(int) noexcept(noexcept(m_value++))
-      requires post_increment<Rep>
+      requires post_increment<value_type>
   {
     return strong_type{m_value++};
   }
 
   constexpr strong_type& operator--() noexcept(noexcept(--m_value))
-      requires pre_decrement<Rep>
+      requires pre_decrement<value_type>
   {
     --m_value;
     return *this;
   }
 
   constexpr strong_type operator--(int) noexcept(noexcept(m_value--))
-      requires post_decrement<Rep>
+      requires post_decrement<value_type>
   {
     return strong_type{m_value--};
   }
 
   [[nodiscard]]
   constexpr auto operator+() const noexcept(noexcept(+m_value))
-      requires unary_plus<Rep>
+      requires unary_plus<value_type>
   {
     return strong_type{+m_value};
   }
 
   [[nodiscard]]
   constexpr auto operator-() const noexcept(noexcept(-m_value))
-      requires unary_minus<Rep>
+      requires unary_minus<value_type>
   {
     return strong_type{-m_value};
   }
 
   [[nodiscard]]
   constexpr auto operator~() const noexcept(noexcept(~m_value))
-      requires bit_not<Rep>
+      requires bit_not<value_type>
   {
     return strong_type{~m_value};
   }
 
   [[nodiscard]]
   constexpr auto operator!() const noexcept(noexcept(!m_value))
-      requires negation<Rep>
+      requires negation<value_type>
   {
     return !m_value;
   }
 
-  template <typename Index> requires subscript<Rep, Index>
+  template <typename Index> requires subscript<value_type, Index>
   constexpr decltype(auto) operator[](const Index& key)
       noexcept(noexcept(m_value.operator[](key)))
   {
     return m_value[key];
   }
 
-  template <typename Index> requires subscript<Rep, Index>
+  template <typename Index> requires subscript<value_type, Index>
   constexpr decltype(auto) operator[](const Index& key) const
       noexcept(noexcept(m_value.operator[](key)))
   {
@@ -259,7 +259,7 @@ class strong_type
   [[nodiscard]]
   constexpr auto operator+(const strong_type& rhs) const
       noexcept(noexcept(m_value + rhs.m_value))
-      requires addition<Rep>
+      requires addition<value_type>
   {
     return strong_type{m_value + rhs.m_value};
   }
@@ -267,7 +267,7 @@ class strong_type
   [[nodiscard]]
   constexpr auto operator-(const strong_type& rhs) const
       noexcept(noexcept(m_value - rhs.m_value))
-      requires subtraction<Rep>
+      requires subtraction<value_type>
   {
     return strong_type{m_value - rhs.m_value};
   }
@@ -275,7 +275,7 @@ class strong_type
   [[nodiscard]]
   constexpr auto operator/(const strong_type& rhs) const
       noexcept(noexcept(m_value / rhs.m_value))
-      requires division<Rep>
+      requires division<value_type>
   {
     return strong_type{m_value / rhs.m_value};
   }
@@ -283,7 +283,7 @@ class strong_type
   [[nodiscard]]
   constexpr auto operator*(const strong_type& rhs) const
       noexcept(noexcept(m_value * rhs.m_value))
-      requires multiplication<Rep>
+      requires multiplication<value_type>
   {
     return strong_type{m_value * rhs.m_value};
   }
@@ -291,7 +291,7 @@ class strong_type
   [[nodiscard]]
   constexpr auto operator%(const strong_type& rhs) const
       noexcept(noexcept(m_value % rhs.m_value))
-      requires modulo<Rep>
+      requires modulo<value_type>
   {
     return strong_type{m_value % rhs.m_value};
   }
@@ -299,7 +299,7 @@ class strong_type
   [[nodiscard]]
   constexpr auto operator&(const strong_type& rhs) const
       noexcept(noexcept(m_value & rhs.m_value))
-      requires bit_and<Rep>
+      requires bit_and<value_type>
   {
     return strong_type{m_value & rhs.m_value};
   }
@@ -307,7 +307,7 @@ class strong_type
   [[nodiscard]]
   constexpr auto operator|(const strong_type& rhs) const
       noexcept(noexcept(m_value | rhs.m_value))
-      requires bit_or<Rep>
+      requires bit_or<value_type>
   {
     return strong_type{m_value | rhs.m_value};
   }
@@ -315,7 +315,7 @@ class strong_type
   [[nodiscard]]
   constexpr auto operator^(const strong_type& rhs) const
       noexcept(noexcept(m_value ^ rhs.m_value))
-      requires bit_xor<Rep>
+      requires bit_xor<value_type>
   {
     return strong_type{m_value ^ rhs.m_value};
   }
@@ -323,7 +323,7 @@ class strong_type
   [[nodiscard]]
   constexpr auto operator<<(const strong_type& rhs) const
       noexcept(noexcept(m_value << rhs.m_value))
-      requires left_shift<Rep>
+      requires left_shift<value_type>
   {
     return strong_type{m_value << rhs.m_value};
   }
@@ -331,7 +331,7 @@ class strong_type
   [[nodiscard]]
   constexpr auto operator>>(const strong_type& rhs) const
       noexcept(noexcept(m_value >> rhs.m_value))
-      requires right_shift<Rep>
+      requires right_shift<value_type>
   {
     return strong_type{m_value >> rhs.m_value};
   }
@@ -343,7 +343,7 @@ class strong_type
 
   constexpr strong_type& operator+=(const strong_type& rhs)
       noexcept(noexcept(m_value += rhs.m_value))
-      requires addition_assignment<Rep>
+      requires addition_assignment<value_type>
   {
     m_value += rhs.m_value;
     return *this;
@@ -351,7 +351,7 @@ class strong_type
 
   constexpr strong_type& operator-=(const strong_type& rhs)
       noexcept(noexcept(m_value -= rhs.m_value))
-      requires subtraction_assignment<Rep>
+      requires subtraction_assignment<value_type>
   {
     m_value -= rhs.m_value;
     return *this;
@@ -359,7 +359,7 @@ class strong_type
 
   constexpr strong_type& operator/=(const strong_type& rhs)
       noexcept(noexcept(m_value /= rhs.m_value))
-      requires division_assignment<Rep>
+      requires division_assignment<value_type>
   {
     m_value /= rhs.m_value;
     return *this;
@@ -367,7 +367,7 @@ class strong_type
 
   constexpr strong_type& operator*=(const strong_type& rhs)
       noexcept(noexcept(m_value *= rhs.m_value))
-      requires multiplication_assignment<Rep>
+      requires multiplication_assignment<value_type>
   {
     m_value *= rhs.m_value;
     return *this;
@@ -375,7 +375,7 @@ class strong_type
 
   constexpr strong_type& operator%=(const strong_type& rhs)
       noexcept(noexcept(m_value %= rhs.m_value))
-      requires modulo_assignment<Rep>
+      requires modulo_assignment<value_type>
   {
     m_value %= rhs.m_value;
     return *this;
@@ -383,7 +383,7 @@ class strong_type
 
   constexpr strong_type& operator&=(const strong_type& rhs)
       noexcept(noexcept(m_value &= rhs.m_value))
-      requires bit_and_assignment<Rep>
+      requires bit_and_assignment<value_type>
   {
     m_value &= rhs.m_value;
     return *this;
@@ -391,7 +391,7 @@ class strong_type
 
   constexpr strong_type& operator|=(const strong_type& rhs)
       noexcept(noexcept(m_value |= rhs.m_value))
-      requires bit_or_assignment<Rep>
+      requires bit_or_assignment<value_type>
   {
     m_value |= rhs.m_value;
     return *this;
@@ -399,7 +399,7 @@ class strong_type
 
   constexpr strong_type& operator^=(const strong_type& rhs)
       noexcept(noexcept(m_value ^= rhs.m_value))
-      requires bit_xor_assignment<Rep>
+      requires bit_xor_assignment<value_type>
   {
     m_value ^= rhs.m_value;
     return *this;
@@ -407,7 +407,7 @@ class strong_type
 
   constexpr strong_type& operator<<=(const strong_type& rhs)
       noexcept(noexcept(m_value <<= rhs.m_value))
-      requires left_shift_assignment<Rep>
+      requires left_shift_assignment<value_type>
   {
     m_value <<= rhs.m_value;
     return *this;
@@ -415,7 +415,7 @@ class strong_type
 
   constexpr strong_type& operator>>=(const strong_type& rhs)
       noexcept(noexcept(m_value >>= rhs.m_value))
-      requires right_shift_assignment<Rep>
+      requires right_shift_assignment<value_type>
   {
     m_value >>= rhs.m_value;
     return *this;
@@ -429,7 +429,7 @@ class strong_type
   [[nodiscard]]
   constexpr auto operator==(const strong_type& rhs) const
       noexcept(noexcept(m_value == rhs.m_value))
-      requires std::equality_comparable<Rep>
+      requires std::equality_comparable<value_type>
   {
     return m_value == rhs.m_value;
   }
@@ -437,7 +437,7 @@ class strong_type
   [[nodiscard]]
   constexpr auto operator!=(const strong_type& rhs) const
       noexcept(noexcept(m_value != rhs.m_value))
-      requires std::equality_comparable<Rep>
+      requires std::equality_comparable<value_type>
   {
     return m_value != rhs.m_value;
   }
@@ -445,7 +445,7 @@ class strong_type
   [[nodiscard]]
   constexpr auto operator<(const strong_type& rhs) const
       noexcept(noexcept(m_value < rhs.m_value))
-      requires less<Rep>
+      requires less<value_type>
   {
     return m_value < rhs.m_value;
   }
@@ -453,7 +453,7 @@ class strong_type
   [[nodiscard]]
   constexpr auto operator<=(const strong_type& rhs) const
       noexcept(noexcept(m_value <= rhs.m_value))
-      requires less_equal<Rep>
+      requires less_equal<value_type>
   {
     return m_value <= rhs.m_value;
   }
@@ -461,7 +461,7 @@ class strong_type
   [[nodiscard]]
   constexpr auto operator>(const strong_type& rhs) const
       noexcept(noexcept(m_value > rhs.m_value))
-      requires greater<Rep>
+      requires greater<value_type>
   {
     return m_value > rhs.m_value;
   }
@@ -469,7 +469,7 @@ class strong_type
   [[nodiscard]]
   constexpr auto operator>=(const strong_type& rhs) const
       noexcept(noexcept(m_value >= rhs.m_value))
-      requires greater_equal<Rep>
+      requires greater_equal<value_type>
   {
     return m_value >= rhs.m_value;
   }
@@ -478,29 +478,29 @@ class strong_type
 
   /// \} end of comparison operators
 
-  [[nodiscard]] constexpr Rep& get() noexcept(nothrowCopy)
+  [[nodiscard]] constexpr value_type& get() noexcept(nothrowCopy)
   {
     return m_value;
   }
 
-  [[nodiscard]] constexpr const Rep& get() const noexcept(nothrowCopy)
+  [[nodiscard]] constexpr const value_type& get() const noexcept(nothrowCopy)
   {
     return m_value;
   }
 
-  const Rep* operator->() const noexcept
+  const value_type* operator->() const noexcept
   {
     return &m_value;
   }
 
-  Rep* operator->() noexcept
+  value_type* operator->() noexcept
   {
     return &m_value;
   };
 
   // clang-format off
 
-  constexpr explicit(Conversion == explicit_conversion) operator Rep() const
+  constexpr explicit(Conversion == explicit_conversion) operator value_type() const
       noexcept(nothrowCopy)
   {
     return m_value;
@@ -508,7 +508,7 @@ class strong_type
 
   constexpr explicit operator bool() const
       noexcept(noexcept(static_cast<bool>(m_value)))
-      requires bool_convertible<Rep> && (!std::same_as<Rep, bool>)
+      requires bool_convertible<value_type> && (!std::same_as<value_type, bool>)
   {
     return static_cast<bool>(m_value);
   }
@@ -521,7 +521,7 @@ class strong_type
   }
 
  private:
-  Rep m_value{};
+  value_type m_value{};
 };
 
 }  // namespace nenya
