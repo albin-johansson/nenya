@@ -119,7 +119,8 @@ template <typename T, typename Index>
 concept subscript = requires(T t, Index i) { { t[i] }; };
 
 template<typename T>
-concept hashable = requires(T a) {
+concept hashable = requires(T a)
+{
   { std::hash<T>{}(a) } -> std::convertible_to<std::size_t>;
   noexcept(std::hash<T>{}(a));
 };
