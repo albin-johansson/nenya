@@ -1,7 +1,6 @@
 #pragma once
 
-#include <compare>
-#include <concepts>     // convertible_to
+#include <concepts>     // ...
 #include <functional>   // hash
 #include <type_traits>  // enable_if_t
 #include <utility>      // move
@@ -69,7 +68,7 @@ template <typename T>
 concept bit_not = requires(T t) { { ~t } -> std::convertible_to<T>; };
 
 template <typename T>
-concept bit_and = requires(T t) { { t& t } -> std::convertible_to<T>; };
+concept bit_and = requires(T t) { { t & t } -> std::convertible_to<T>; };
 
 template <typename T>
 concept bit_and_assignment = requires(T t) { { t &= t }; };
